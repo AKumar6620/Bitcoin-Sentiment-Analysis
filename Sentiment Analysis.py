@@ -45,16 +45,27 @@ def sentiment_analyzer(tweet_df):
     neg = []
     pos = []
     neu = []
+    sen = []
     for i in tweet_df['Clean_Tweets'].iteritems():
-        compound.append(obj.polarity_scores(i[1])['compound'])
-        neg.append(obj.polarity_scores(i[1])['neg'])
-        pos.append(obj.polarity_scores(i[1])['pos'])
-        neu.append(obj.polarity_scores(i[1])['neu'])
+        polar_dict = obj.polarity_scores(i[1])
+        compound.append(polar_dict['compound'])
+        neg.append(polar_dict['neg'])
+        pos.append(polar_dict['pos'])
+        neu.append(polar_dict['neu'])
+
+        # Assign sentiment of positive, negative, or neutral
+        if polar_dict['compound'] >= 0.05:
+            sen.append("Positive")
+        elif polar_dict['compound'] <= -0.05:
+            sen.append("Negative")
+        else:
+            sen.append("Neutral")
 
     tweet_df['pos'] = pd.Series(pos)
     tweet_df['neg'] = pd.Series(neg)
     tweet_df['neu'] = pd.Series(neu)
     tweet_df['compound'] = pd.Series(compound)
+    tweet_df['Sentiment'] = pd.Series(sen)
     return tweet_df
 
 
